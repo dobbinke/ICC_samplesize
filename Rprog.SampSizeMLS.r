@@ -1,8 +1,43 @@
 
 
 # This source file has the mybisection function
-source("C:\\Documents and Settings\\dobbinke\\My Documents\\My Dropbox\\CurrentFiles\\JournalsInProgress\\SampSizeGCI\\Simulations\\Rprog.Core.SampSizes.txt")
+#source("C:\\Documents and Settings\\dobbinke\\My Documents\\My Dropbox\\CurrentFiles\\JournalsInProgress\\SampSizeGCI\\Simulations\\Rprog.Core.SampSizes.txt")
+
+source("/Users/kevindobbin/Desktop/git/ICC_samplesize/Rprog.Core.SampSizes.txt")
  
+
+
+mybisection <- function(f,lower,upper,tol=1e-4) {
+# THIS FUNCTION RETURNS A TWO-ELEMENT VECTOR: 
+#  ELEMENT 1 IS THE ESTIMATED VALUE AT WHICH THE FUNCTION IS ZERO
+#  ELEMENT 2 IS THE NUMBER OF EVALUATIONS TO GET TO THE VALUE (SEARCH STEPS)
+# For an arbitrary function "f", this function applies a bisection algorithm
+# to find a zero between "lower" and "upper", assuming they are of different signs.
+
+ flow <- f(lower);
+ fupper <- f(upper);
+ diff <- upper - lower;
+ feval <- 2;
+
+ if (flow*fupper>0) {stop("Interval does not contain zero.\n"); }
+
+ while ( abs(diff)>1 & feval < 100) {
+  newpoint <- round( (lower+upper)/2 );
+  newf <- f(newpoint);
+  if (abs(newf)<= tol) break;
+  if (newpoint==lower) break;
+  if (newpoint==upper) break;
+  if (flow*newf < 0) {upper <- newpoint; }
+  if (fupper*newf < 0) {lower <- newpoint; }
+  diff <- upper-lower;
+  feval <- feval+1; 
+ } 
+ c(newpoint,feval);
+}
+
+
+
+
 
 myMLSvolfun <- function(alpha,b0,l0,r0,sigmabsq,sigmalsq,sigmaesq,MCruns=100000,randseed=5) {
 
@@ -210,5 +245,17 @@ MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.4,L=5,R=1,sigmabsq=0.0,sig
 MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.3,L=5,R=1,sigmabsq=0.0,sigmalsq=5,sigmaesq=5,MCreps=1000) 
 MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.2,L=5,R=1,sigmabsq=0.0,sigmalsq=5,sigmaesq=5,MCreps=1000) 
 MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.1,L=5,R=1,sigmabsq=0.0,sigmalsq=5,sigmaesq=5,MCreps=1000) 
+
+
+# focus on just target=0.3
+
+# This is the ICC=0.7 case
+MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.3,L=10,R=5,sigmabsq=7,sigmalsq=1.5,sigmaesq=1.5,MCreps=1000) 
+
+
+# This is the ICC=0.5 case
+MLSb0estfun(alpha=0.05,initial=3,stepsize=30,target=0.3,L=10,R=5,sigmabsq=5,sigmalsq=2.5,sigmaesq=2.5,MCreps=1000) 
+
+
 
 
